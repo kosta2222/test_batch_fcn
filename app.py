@@ -131,9 +131,6 @@ class Two_lay_fcn:
     def operations(self, op, x):
         y = np.zeros(x.shape[0])
         height = x.shape[0]
-        # self.alpha_sigmoid = 1
-        # print('height', height)
-        # print('x', x)
         if op == RELU:
             for row in range(height):
                 if (x[row][0] <= 0):
@@ -187,9 +184,53 @@ class Two_lay_fcn:
         else:
             print("Op or function does not support ", op)
 
+    def plot_gr(self, _file: str, errors: list, epochs: list) -> None:
+        fig: plt.Figure = None
+        ax: plt.Axes = None
+        fig, ax = plt.subplots()
+        ax.plot(epochs, errors,
+                label="learning",
+                )
+        plt.xlabel('Эпоха обучения')
+        plt.ylabel('loss')
+        ax.legend()
+        plt.savefig(_file)
+        print("Graphic saved")
+        plt.show()
+
+    def evaluate_as_logic(self):
+         m = self.X.shape[0]
+         for single_array_ind in range(m):
+                inputs = self.X[single_array_ind]
+
+            output_2_layer = self.forward(inputs, predict=True)
+
+            equal_flag = 0
+
+            for row in range(self.out_2):
+                elem_net = output_2_layer[row]
+                elem_train_out = self.Y[single_array_ind][row]
+                if elem_net > 0.5:
+                    elem_net = 1
+                else:
+                    elem_net = 0
+                print("elem:", elem_net)
+                print("elem Y:", elem_train_out)
+                print('----')
+                if elem_net == elem_train_out:
+                    equal_flag = 1
+                else:
+                    equal_flag = 0
+                    break
+            if equal_flag == 1:
+                print('-vecs are equal-')
+            else:
+                print('-vecs are not equal-')
+
+        print("========")
+
     def forward(self, X, predict=False):
         X = np.array(X)
-        # Getting the training eself.Xample as a column vector.
         inputs = X.reshape(X.shape[0], 1)
 
         matr_prod_hid = self.W1.dot(inputs) + self.B1
@@ -200,7 +241,7 @@ class Two_lay_fcn:
 
         if predict:
             return out_cn
-        # return (hid, out_cn, a3)
+        return (hid, out_cn)
 
     def fit(self, learning_rate=0.1, reg_param=0, max_iter=5000, batch_size=1):
 
@@ -225,21 +266,15 @@ class Two_lay_fcn:
 
             m = self.X.shape[0]
             samp_p = 0
-            for j in range(m):
-            # while True:
+            for _ in range(m):
                 sys.stdout.write(
                     "\rIteration: {} and {} ".format(i + 1, samp_p + 1))
-                
-                if samp_count % (batch_size+1) != 0:
+
+                if samp_count % (batch_size+1) != 0:  # Накапливаем градиент
                     # Forward Prop.
                     input_vec = self.X[samp_p].reshape(
                         self.X[samp_p].shape[0], 1)
-
-                    matr_prod_hid = self.W1.dot(input_vec) + self.B1
-                    hid = self.operations(self.act_func_1, matr_prod_hid)
-
-                    matr_prod_out = self.W2.dot(hid) + self.B2
-                    out_cn = self.operations(self.act_func_2, matr_prod_out)
+                    hid, out_cn = self.forward(input_vec)
 
                     # Back prop.
                     error_metric = out_cn - \
@@ -257,7 +292,7 @@ class Two_lay_fcn:
                     hid_bias_err += hid_half_err * 1
                     out_bias_err += out_cn_half_err * 1
                     gl_err += np.sum(np.square(error_metric))
-                else:
+                else:  # Применяем его
 
                     self.W1 = self.W1 - learning_rate * \
                         (hid_err / m) + ((reg_param / m) * self.W1)
@@ -279,49 +314,9 @@ class Two_lay_fcn:
             sys.stdout.write("error {0}".format(gl_err))
             sys.stdout.flush()  # Updating the teself.Xt.
 
-        plt.plot(range(max_iter), cost)
-        plt.xlabel("Iterations")
-        plt.ylabel("Error")
-        plt.show()
+        self.plot_gr('gr.png', cost, range(max_iter))
 
-        for single_array_ind in range(m):
-            inputs = self.X[single_array_ind]
-
-            output_2_layer = self.forward(inputs, predict=True)
-
-            equal_flag = 0
-
-            for row in range(self.out_2):
-                elem_net = output_2_layer[row]
-                elem_train_out = self.Y[single_array_ind][row]
-                # if elem_net > 0.5:
-                #     elem_net = 1
-                # else:
-                #     elem_net = 0
-                print("elem:", elem_net)
-                print("elem Y:", elem_train_out)
-                print('----')
-            #     if elem_net == elem_train_out:
-            #         equal_flag = 1
-            #     else:
-            #         equal_flag = 0
-            #         break
-            # if equal_flag == 1:
-            #     print('-vecs are equal-')
-            # else:
-            #     print('-vecs are not equal-')
-
-        print("========")
-
-    def predict(self, x):
-        height_x = x.shape[0]
-        for i in range(height_x):
-            ans = self.forward(x[i], predict=True)
-            print('ans', ans)
-            len_ans = ans.shape[0]
-            for elem in range(len_ans):
-                ans_1 = math.ceil((ans[elem]-0.5)*10)
-                print('ans_1', ans_1)
+        
 
     def predict_spec(self, contr_co_s: tuple, s, devider=1):
         if contr_co_s == 'logic':
@@ -341,7 +336,6 @@ class Two_lay_fcn:
             len_ans = ans.shape[0]
             for elem in range(len_ans):
                 ans_1 = ans[elem][0]
-                # print('ans_1_r', ans_1)
 
                 if contr_co_s == 'logic':
                     if elem == 0:
@@ -369,11 +363,6 @@ def main():
        1+3=4;
        1+4=5;
        """
-    s1 = """
-     1|1=1;
-     1|0=1;
-     0|1=1;
-     0|0=0;"""
 
     X, Y, _ = create_matrices_x_y_from_symb_code(s, 5, 2, devider=10)
     net = Two_lay_fcn(5, 7, 2, act_func_1=SIGMOID,
@@ -382,14 +371,20 @@ def main():
     net.set_act_funcs_pars(alpha_sigmoid=3.5)
     net.fit(max_iter=7000, reg_param=0, batch_size=3)
     net.to_file('wei.my')  # Сохранили обучение на s
+    
+    # s1 = """
+    #  1|1=1;
+    #  1|0=1;
+    #  0|1=1;
+    #  0|0=0;"""
+    """
+    net_1 = Two_lay_fcn(load_f_name='wei_1.my')  # Дообучаем ее на s1
 
-    # net_1 = Two_lay_fcn(load_f_name='wei_1.my')  # Дообучаем ее на s1
-
-    # X1, Y1, _ = create_matrices_x_y_from_symb_code(s1, 5, 2, devider=1)
-    # net_1.set_X_Y(X1, Y1)
-    # net_1.fit(max_iter=1000, reg_param=0, batch_size=3)
-    # net_1.to_file('wei.my')  # Сохранили обучение на s1
-
+    X1, Y1, _ = create_matrices_x_y_from_symb_code(s1, 5, 2, devider=1)
+    net_1.set_X_Y(X1, Y1)
+    net_1.fit(max_iter=1000, reg_param=0, batch_size=3)
+    net_1.to_file('wei.my')  # Сохранили обучение на s1
+    """
 
 def test():
     s = """1+0=1;
@@ -402,17 +397,18 @@ def test():
        2+0=2;
        2*3=6;
        """
-    s1 = """
-     1|1=1;
-     1|0=1;
-     0|1=1;
-     0|0=0"""
 
     net = Two_lay_fcn(load_f_name='wei.my')
+    net.predict_spec('math', s, devider=10)
+    # s1 = """
+    #  1|1=1;
+    #  1|0=1;
+    #  0|1=1;
+    #  0|0=0"""
     # X, Y, _ = create_matrices_x_y_from_symb_code(s1, 5, 2, devider=10)
     # net.predict_spec('logic', s1, devider=1)
-    net.predict_spec('math', s, devider=10)
+    
 
 
-# main()
-test()
+main()
+# test()
