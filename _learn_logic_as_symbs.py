@@ -1,9 +1,12 @@
 from  _two_lay_fcn import Two_lay_fcn
 from work_with_symbls import create_matrices_x_y_from_symb_code
 from _ops_constants import SIGMOID
+import math
 
 
 class LearnLogicAsSymbs(Two_lay_fcn):
+    def set_X_Y(self, s):
+       self.X, self.Y, _= create_matrices_x_y_from_symb_code(s, self.in_1, self.out_2, devider=1)  
     def evaluate_as_logic(self):
         m = self.X.shape[0]
         for single_array_ind in range(m):
@@ -34,7 +37,7 @@ class LearnLogicAsSymbs(Two_lay_fcn):
                 print('-vecs are not equal-')
 
 
-    def predict_spec(self, contr_co_s: tuple, s, devider=1):
+    def predict_spec(self, contr_co_s, s, devider=1):
         if contr_co_s == 'logic':
             print('mode', contr_co_s)
         # elif contr_co_s == 'math':
@@ -73,21 +76,6 @@ class LearnLogicAsSymbs(Two_lay_fcn):
 
 
 def main():
-    # s = """1+0=1;
-    #    1+1=2;
-    #    1+2=3;
-    #    1+3=4;
-    #    1+4=5;
-    #    """
-
-    # X, Y, _ = create_matrices_x_y_from_symb_code(s, 5, 2, devider=10)
-    # net = LearnLogicAsSymbs(5, 7, 2, act_func_1=SIGMOID,
-    #                         act_func_2=SIGMOID, with_biasses=True)
-    # net.set_X_Y(X, Y)
-    # net.set_act_funcs_pars(alpha_sigmoid=3.5)
-    # net.fit(max_iter=7000, reg_param=0, batch_size=3)
-    # net.to_file('wei.my')  # Сохранили обучение на s
-
     s1 = """
      1|1=1;
      1|0=1;
@@ -96,36 +84,21 @@ def main():
     
     net_1 = LearnLogicAsSymbs(in_1=5, out_1=7, out_2=2)  # Дообучаем ее на s1
     net_1.set_act_funcs_pars(alpha_sigmoid=3.5)
-
-    X1, Y1, _ = create_matrices_x_y_from_symb_code(s1, 5, 2, devider=1)
-    net_1.set_X_Y(X1, Y1)
+    net_1.set_X_Y(s1)
     net_1.fit(max_iter=1000, reg_param=0, batch_size=3)
     net_1.to_file('wei.my')  # Сохранили обучение на s1
     
 
 
 def test():
-    s = """1+0=1;
-       1+1=2;
-       1+2=3;
-       1+3=4;
-       1+4=5;
-       2+2=4;
-       7+2=9;
-       2+0=2;
-       2*3=6;
-       """
-
-    net = Two_lay_fcn(load_f_name='wei.my')
-    net.predict_spec('math', s, devider=10)
-    # s1 = """
-    #  1|1=1;
-    #  1|0=1;
-    #  0|1=1;
-    #  0|0=0"""
-    # X, Y, _ = create_matrices_x_y_from_symb_code(s1, 5, 2, devider=10)
-    # net.predict_spec('logic', s1, devider=1)
+    s1 = """
+     1|1=1;
+     1|0=1;
+     0|1=1;
+     0|0=0"""
+    net_1=LearnLogicAsSymbs(load_f_name='wei.my') 
+    net_1.predict_spec('logic', s1, devider=1)
 
 
-main()
-# test()
+# main()
+test()
