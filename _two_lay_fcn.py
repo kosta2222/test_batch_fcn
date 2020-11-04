@@ -45,10 +45,10 @@ class Two_lay_fcn:
             self.B1 = 0
             self.B2 = 0
 
-        self._opsalpha_leaky_relu = net[self._idxs.alpha_leaky_relu_k]
-        self.alpha_sigmoid = net[self._idxs.alpha_sigmoid_k]
-        self.alpha_tan = net[self._idxs.alpha_tan_k]
-        self.beta_tan = net[self._idxs.beta_tan_k]
+        self._ops.alpha_leaky_relu = net[self._idxs.alpha_leaky_relu_k]
+        self._ops.alpha_sigmoid = net[self._idxs.alpha_sigmoid_k]
+        self._ops.alpha_tan = net[self._idxs.alpha_tan_k]
+        self._ops.beta_tan = net[self._idxs.beta_tan_k]
 
     def build_fcn_pars(self, in_1, out_1, out_2, act_func_1, act_func_2, with_biasses):
         np.random.seed(1)

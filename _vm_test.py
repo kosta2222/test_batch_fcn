@@ -1,7 +1,3 @@
-Более подробное описание:
-
-ex:
-
 from _learn_logic_as_symbs import LearnLogicAsSymbs
 
 class VmTest:
@@ -21,18 +17,10 @@ class VmTest:
             else:
                print("uncnown answer")
 
-cmd:
-exit - выйти
-->1|0
-mode logic
-1)  1|0 answer 1
-->0|1
-mode logic
-1)  0|1 answer 1
-->1|1
-mode logic
-1)  1|1 answer 1
-->0|0
-mode logic
-1)  0|0 answer 0
-->exit
+
+
+def main():
+    v= VmTest()
+    v.loop()
+
+main()    
