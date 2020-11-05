@@ -23,7 +23,7 @@ class VmTest:
                     s1 = input('L->')
                     if s1 == 'exit':
                         break
-                    b_c, ans=self._learn_logic_fcn.predict_spec("logic", s1)
+                    b_c, ans=self._learn_logic_fcn.evaluate("logic", s1)
                     if b_c == ICONST:
                         print("answer %d" % ans)
                     else:

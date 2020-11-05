@@ -1,47 +1,18 @@
-from  ._two_lay_fcn import Two_lay_fcn
+from  ._two_lay_fcn import TwoLayFcn
+from ._backprop import Backprop
 from .work_with_symbls import create_matrices_x_y_from_symb_code
 from ._ops_constants import SIGMOID
 import math
 
 
-class LearnLogicAsSymbs(Two_lay_fcn):
+class LearnLogicAsSymbs(TwoLayFcn):
     def set_X_Y(self, s):
+       self.__s=s 
        self.X, self.Y, _= create_matrices_x_y_from_symb_code(s, self.in_1, self.out_2, devider=1)  
-    def evaluate_as_logic(self):
-        m = self.X.shape[0]
-        for single_array_ind in range(m):
-            inputs = self.X[single_array_ind]
 
-            output_2_layer = self.forward(inputs, predict=True)
-
-            equal_flag = 0
-
-            for row in range(self.out_2):
-                elem_net = output_2_layer[row]
-                elem_train_out = self.Y[single_array_ind][row]
-                if elem_net > 0.5:
-                    elem_net = 1
-                else:
-                    elem_net = 0
-                print("elem:", elem_net)
-                print("elem Y:", elem_train_out)
-                print('----')
-                if elem_net == elem_train_out:
-                    equal_flag = 1
-                else:
-                    equal_flag = 0
-                    break
-            if equal_flag == 1:
-                print('-vecs are equal-')
-            else:
-                print('-vecs are not equal-')
-
-
-    def predict_spec(self, contr_co_s, s, devider=1):
+    def evaluate(self, contr_co_s, s, devider=1):
         if contr_co_s == 'logic':
             print('mode', contr_co_s)
-        # elif contr_co_s == 'math':
-        #     print('mode', contr_co_s)
         else:
             raise Exception("Theare no such keyword %s" % contr_co_s)
         x, _, exs = create_matrices_x_y_from_symb_code(
@@ -55,7 +26,6 @@ class LearnLogicAsSymbs(Two_lay_fcn):
             len_ans = ans.shape[0]
             for elem in range(len_ans):
                 ans_1 = ans[elem][0]
-
                 if contr_co_s == 'logic':
                     if elem == 0:
                         b_c_el = math.ceil(ans_1*10-0.5)
@@ -64,7 +34,7 @@ class LearnLogicAsSymbs(Two_lay_fcn):
                             ans_1 = 0
                         else:
                             ans_1 = 1
-                        return (b_c_el, ans_1)       
+                        print('b_c_el', b_c_el, 'ans_1', ans_1)       
                 elif contr_co_s == 'math':
                     if elem == 0:
                         b_c_el = math.ceil(ans_1*10-0.5)
@@ -74,22 +44,10 @@ class LearnLogicAsSymbs(Two_lay_fcn):
                      
 
             print('***')
+    def __str__(self):
+         s="in1: {0}  out2: {1}".format(self.in_1, self.out_2)
+         return s
 
 
-def learn():
-    s1 = """
-     1|1=1;
-     1|0=1;
-     0|1=1;
-     0|0=0;"""
-    
-    net_1 = LearnLogicAsSymbs(in_1=5, out_1=7, out_2=2)  # Дообучаем ее на s1
-    net_1.set_act_funcs_pars(alpha_sigmoid=2)
-    net_1.set_X_Y(s1)
-    net_1.fit(max_iter=7000, reg_param=0, batch_size=2)
-    net_1.to_file('wei.my')  # Сохранили обучение на s1
-
-# learn()
-    
 
 
