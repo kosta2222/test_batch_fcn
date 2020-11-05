@@ -54,7 +54,7 @@ def learn():
     net_1 = LearnMathAsSymbs(in_1=5, out_1=7, out_2=2)  
     net_1.set_act_funcs_pars(alpha_sigmoid=2)
     net_1.set_X_Y(s1)
-    net_1.fit(max_iter=8000, reg_param=0, batch_size=2, learning_rate=0.1)
+    net_1.fit(max_iter=10000, reg_param=0, batch_size=2, learning_rate=0.1)
     net_1.to_file('wei_math.my')  # Сохранили обучение на s1
     net_1.predict_spec("math",s1)
 
