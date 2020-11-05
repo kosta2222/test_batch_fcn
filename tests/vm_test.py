@@ -1,24 +1,9 @@
-Более подробное описание:
-В папке tests приложение: тестирование на логическое ИЛИ-подавал все примеры, и тестирование сложения-обучал как
-s1 ="""
-     1+0=1;
-     1+1=2;
-     1+2=3;
-     1+3=4;
-     1+4=5;
-     1+5=6;
-     6+1=7;
-     7+1=8;
-     8+1=9;
-       """
-На таком тестирование вычисляла как 3+3 (хотя не было в обучающем наборе), но пока заметил одну ошибку 2+7->8->error.
-ex:
-(приложение)
-(импорты)
 from num_fcn._learn_logic_as_symbs import LearnLogicAsSymbs
 from num_fcn._learn_math_as_symbs import LearnMathAsSymbs
+import os
 
-
+s1=os.path.join(os.path.dirname(__file__),"..", 'wei.my')
+s2=os.path.join(os.path.dirname(__file__), "..", 'wei_math.my')
 class VmTest:
     def __init__(self, learn_logic_fcn=LearnLogicAsSymbs(load_f_name=s1),
      learn_math_fcn=LearnMathAsSymbs(load_f_name=s2)):
@@ -54,42 +39,10 @@ class VmTest:
                     else:
                         print("uncnown answer")
 
-(консоль)
-cmd:
-exit - выйти, mode_logic | mode_math
-->mode_logic
-L->1|0
-mode logic
-1)  1|0 answer 1
-L->0|0
-mode logic
-1)  0|0 answer 0
-L->0|1
-mode logic
-1)  0|1 answer 1
-L->1|1
-mode logic
-1)  1|1 answer 1
-L->exit
-->mode_math
-M->1+0
-mode math
-1)  1+0 answer 1
-M->1+1
-mode math
-1)  1+1 answer 2
-M->1+7
-mode math
-1)  1+7 answer 8
-mode math
-M->3+3
-mode math
-1)  3+3 answer 6
-M->2+7
-mode math
-1)  2+7 answer 8->error
-M->5+2
-mode math
-1)  5+2 answer 7
-M->exit
-->exit
+
+def main():
+    v = VmTest()
+    v.loop()
+
+
+main()

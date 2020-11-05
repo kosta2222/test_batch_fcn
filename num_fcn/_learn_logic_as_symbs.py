@@ -1,6 +1,6 @@
-from  _two_lay_fcn import Two_lay_fcn
-from work_with_symbls import create_matrices_x_y_from_symb_code
-from _ops_constants import SIGMOID
+from  ._two_lay_fcn import Two_lay_fcn
+from .work_with_symbls import create_matrices_x_y_from_symb_code
+from ._ops_constants import SIGMOID
 import math
 
 
@@ -84,10 +84,12 @@ def learn():
      0|0=0;"""
     
     net_1 = LearnLogicAsSymbs(in_1=5, out_1=7, out_2=2)  # Дообучаем ее на s1
-    net_1.set_act_funcs_pars(alpha_sigmoid=3.5)
+    net_1.set_act_funcs_pars(alpha_sigmoid=2)
     net_1.set_X_Y(s1)
-    net_1.fit(max_iter=7000, reg_param=0, batch_size=3)
+    net_1.fit(max_iter=7000, reg_param=0, batch_size=2)
     net_1.to_file('wei.my')  # Сохранили обучение на s1
+
+# learn()
     
 
 

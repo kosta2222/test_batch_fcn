@@ -1,23 +1,26 @@
 # -*-coding: utf8-*-
 
 import sys
-from _operations import Ops  # функции активации и их производные
-from _ops_constants import RELU, SIGMOID, TAN, TRESHOLD_FUNC_HALF, LEAKY_RELU
-from _indexes_to_ser import IndexesToSer  # индексы для сериализации
+from ._operations import Ops  # функции активации и их производные
+from ._ops_constants import RELU, SIGMOID, TAN, TRESHOLD_FUNC_HALF, LEAKY_RELU
+from ._indexes_to_ser import IndexesToSer  # индексы для сериализации
+from ._util import Util 
+
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
-# 2-слойнаЯ сеть свЯзей
+# 2-слойная сеть свЯзей
 
 
 class Two_lay_fcn:
 
-    def __init__(self, ops=Ops(), idxs=IndexesToSer(), in_1=0, out_1=0, out_2=0, act_func_1=SIGMOID, act_func_2=SIGMOID, with_biasses=True, load_f_name=''):
+    def __init__(self, ops=Ops(), idxs=IndexesToSer(), util=Util(), in_1=0, out_1=0, out_2=0, act_func_1=SIGMOID, act_func_2=SIGMOID, with_biasses=True, load_f_name=''):
 
         self._ops = ops  # также установим функции активации и их производные
         self._idxs = idxs  # индексы для сериализации
+        self._util=util
 
         if load_f_name != '':  # файл сериализации нам  задан, загружаем
             self.load_ser_d_file(load_f_name)
@@ -113,20 +116,6 @@ class Two_lay_fcn:
         self._ops.alpha_tan = alpha_tan
         self._ops.beta_tan = beta_tan
 
-    def plot_gr(self, _file: str, errors: list, epochs: list) -> None:
-        fig: plt.Figure = None
-        ax: plt.Axes = None
-        fig, ax = plt.subplots()
-        ax.plot(epochs, errors,
-                label="learning",
-                )
-        plt.xlabel('Эпоха обучения')
-        plt.ylabel('loss')
-        ax.legend()
-        plt.savefig(_file)
-        print("Graphic saved")
-        plt.show()
-
     def forward(self, X, predict=False):
         X = np.array(X)
         inputs = X.reshape(X.shape[0], 1)
@@ -188,7 +177,7 @@ class Two_lay_fcn:
 
                     hid_bias_err += hid_half_err * 1
                     out_bias_err += out_cn_half_err * 1
-                    gl_err += np.sum(np.square(error_metric))
+                    gl_err += self._util.mse(error_metric)
                 else:  # Применяем его
 
                     self.W1 = self.W1 - learning_rate * \
@@ -211,4 +200,5 @@ class Two_lay_fcn:
             sys.stdout.write("error {0}".format(gl_err))
             sys.stdout.flush()  # Updating the teself.Xt.
 
-        self.plot_gr('gr.png', cost, range(max_iter))
+        self._util.plot_gr('gr.png', cost, range(max_iter))
+

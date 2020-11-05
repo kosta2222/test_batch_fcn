@@ -67,9 +67,3 @@ def create_matrices_x_y_from_symb_code(math_text: str, net_in, net_out, devider)
 
     return x, y, splitted_text_by_simicln
 
-
-# src = "1+2=3;\
-#      2+2=4;\
-#      3+2=5"
-# X, Y = create_matrices_from_symb_code(src, 10, 3)
-# print(X, Y)
