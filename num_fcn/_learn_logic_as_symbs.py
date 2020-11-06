@@ -7,7 +7,6 @@ import math
 
 class LearnLogicAsSymbs(TwoLayFcn):
     def set_X_Y(self, s):
-       self.__s=s 
        self.X, self.Y, _= create_matrices_x_y_from_symb_code(s, self.in_1, self.out_2, devider=1)  
 
     def evaluate(self, contr_co_s, s, devider=1):

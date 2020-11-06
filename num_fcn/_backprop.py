@@ -45,8 +45,10 @@ class Backprop:
             gl_err = 0
 
             m = self._fcn.X.shape[0]
-            self.samp_p = 0
-            for _ in range(m):
+            # is_samples = True
+            self.samp_p=0
+            for _ in range(m) :
+                # self.samp_p=0
                 _sys.stdout.write(
                     "\rIteration: {} and {} ".format(i + 1, self.samp_p + 1))
 
@@ -68,6 +70,7 @@ class Backprop:
 
                     hid_bias_err += hid_half_err * 1
                     out_bias_err += out_cn_half_err * 1
+                   
                     gl_err += self._fcn._util.mse(error_metric)
                 else:  # Применяем его
                     self._fcn.W1 = self.update_matrix(
@@ -80,6 +83,7 @@ class Backprop:
                         learning_rate * (hid_bias_err / m)
                     self._fcn.B2 = self._fcn.B2 - \
                         learning_rate * (out_bias_err / m)
+                   
                 self.samp_p += 1
                 self.samp_count += 1
 

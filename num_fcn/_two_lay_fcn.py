@@ -16,7 +16,7 @@ import pickle
 
 class TwoLayFcn:
 
-    def __init__(self, ops=Ops(), idxs=IndexesToSer(), util=Util(), in_1=0, out_1=0, out_2=0, with_biasses=True, load_f_name=''):
+    def __init__(self, ops=Ops(), idxs=IndexesToSer(), util=Util(), with_biasses=True, load_f_name=''):
 
         self._ops = ops  # также установим функции активации и их производные
         self._idxs = idxs  # индексы для сериализации
@@ -25,10 +25,10 @@ class TwoLayFcn:
         if load_f_name != '':  # файл сериализации нам  задан, загружаем
             self.load_ser_d_file(load_f_name)
 
-        else:  # файл сериализации нам не задан, строим сеть, после этого блока будет работать с to_file()
+        # else:  # файл сериализации нам не задан, строим сеть, после этого блока будет работать с to_file()
 
-            self.build_fcn_pars(in_1, out_1, out_2,
-                                with_biasses)
+        #     self.build_fcn_pars(in_1, out_1, out_2,
+        #                         with_biasses)
 
     def load_ser_d_file(self, load_f_name):
         net = None
@@ -130,7 +130,7 @@ class TwoLayFcn:
         if predict:
             return out_cn
         return (hid, out_cn)
-    def evaluate(self, inputs):
+    def evaluate(self):
         m = self.X.shape[0]
         for single_array_ind in range(m):
             inputs = self.X[single_array_ind]
@@ -141,7 +141,7 @@ class TwoLayFcn:
 
             for row in range(self.out_2):
                 elem_net = output_2_layer[row]
-                elem_train_out = self.Y[single_array_ind][row]
+                elem_train_out = self.Y[single_array_ind]
                 if elem_net > 0.5:
                     elem_net = 1
                 else:

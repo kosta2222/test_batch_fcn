@@ -19,7 +19,7 @@ class ConfigureCmdApp:
         self._learn = learn
         self.__max_iter = 1000
         self.__learning_rate=0.1
-        self.__alpha_sigmoid = 1
+        self.__alpha_sigmoid = 2
         self.__batch_size = 2
         self.__reg_param = 0
         self.__act_func1 = SIGMOID
@@ -28,7 +28,7 @@ class ConfigureCmdApp:
 
     def loop(self):
         print('set-max-iter <Val> | set-act-func-1 <Str> | set-act-func-2 <Str> | set-alpha-sigmoid <Val> | r - сразу дефаултные:\
-max-iter=1000 alpha-sigmoid=1 batch-size=2 reg-param=0 обе активационные функции SIGMOID | stop')
+max-iter=1000 alpha-sigmoid=2 batch-size=2 reg-param=0 обе активационные функции SIGMOID | stop')
         shell_is_running = True
         while shell_is_running:
             s = input('->')
@@ -39,7 +39,7 @@ max-iter=1000 alpha-sigmoid=1 batch-size=2 reg-param=0 обе активацио
                 self._learn._fcn.set_act_funcs(act_func1=self.__act_func1, act_func2=self.__act_func2)
                 self._learn.fit(learning_rate=self.__learning_rate, reg_param=self.__reg_param, max_iter=self.__max_iter,
                 batch_size=self.__batch_size)
-                self._learn._fcn.evaluate('logic', self.sx )
+                self._learn._fcn.evaluate()
                 s=input('?->Продолжать заново обучение с другими параметрами? y/n :')
                 if s=='y':
                     continue

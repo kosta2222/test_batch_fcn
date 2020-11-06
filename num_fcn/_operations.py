@@ -71,6 +71,7 @@ class Ops:
             y = self.alpha_tan * np.tanh(self.beta_tan * x)
             return y
         elif op == TAN_DERIV:
-            return self.beta_tan * self.alpha_tan * 4 / ((np.exp(self.beta_tan * x) + np.exp(-self.beta_tan * x))**2)
+            c=self.beta_tan/self.alpha_tan
+            return c * (self.alpha_tan ** 2 - x ** 2) 
         else:
             print("Op or function does not support ", op)
