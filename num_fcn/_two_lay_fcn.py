@@ -11,12 +11,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pickle
 
+import logging
+logging.basicConfig(filename='logAfterDeser.txt', level=logging.INFO)
+
 # 2-слойная сеть связей
 
 
 class TwoLayFcn:
 
-    def __init__(self, ops=Ops(), idxs=IndexesToSer(), util=Util(), with_biasses=True, load_f_name=''):
+    def __init__(self, ops=Ops(), idxs=IndexesToSer(), util=Util(), load_f_name=''):
 
         self._ops = ops  # также установим функции активации и их производные
         self._idxs = idxs  # индексы для сериализации
@@ -48,6 +51,8 @@ class TwoLayFcn:
             self.B1 = 0
             self.B2 = 0
 
+        logging.info(f'after sers_d file W1={self.W1} w2={self.W2} B1={self.B1} B2={self.B2} ')    
+
         self._ops.alpha_leaky_relu = net[self._idxs.alpha_leaky_relu_k]
         self._ops.alpha_sigmoid = net[self._idxs.alpha_sigmoid_k]
         self._ops.alpha_tan = net[self._idxs.alpha_tan_k]
@@ -63,10 +68,6 @@ class TwoLayFcn:
         self.out_2 = out_2
         self.is_with_biasses = with_biasses
 
-        self.alpha_leaky_relu = 1.7159
-        self.alpha_sigmoid = 2
-        self.alpha_tan = 1.7159
-        self.beta_tan = 2/3
 
         if with_biasses:
             self.B1 = np.random.random((out_1, 1))
@@ -118,8 +119,8 @@ class TwoLayFcn:
         self._ops.beta_tan = beta_tan
 
     def forward(self, X, predict=False):
-        X = np.array(X)
-        inputs = X.reshape(X.shape[0], 1)
+        X = np.array([X])
+        inputs = X.reshape(X.shape[1], 1)
 
         matr_prod_hid = self.W1.dot(inputs) + self.B1
         hid = self._ops.operations(self.act_func_1, matr_prod_hid)
@@ -129,7 +130,7 @@ class TwoLayFcn:
 
         if predict:
             return out_cn
-        return (hid, out_cn)
+        return (hid, out_cn, X)
     def evaluate(self):
         m = self.X.shape[0]
         for single_array_ind in range(m):
@@ -141,7 +142,8 @@ class TwoLayFcn:
 
             for row in range(self.out_2):
                 elem_net = output_2_layer[row]
-                elem_train_out = self.Y[single_array_ind]
+                print('elem net', elem_net)
+                elem_train_out = self.Y[single_array_ind][row]
                 if elem_net > 0.5:
                     elem_net = 1
                 else:

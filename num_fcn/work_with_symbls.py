@@ -12,6 +12,7 @@ XOR = 0.8
 
 def create_matrices_x_y_from_symb_code(math_text: str, net_in, net_out, devider) -> (tuple, tuple):
     splitted_text_by_simicln = math_text.split(';')
+    print('spl text', splitted_text_by_simicln)
     len_splted = len(splitted_text_by_simicln)
     x = np.zeros((len_splted, net_in))
     y = np.zeros((len_splted, net_out))
@@ -26,7 +27,6 @@ def create_matrices_x_y_from_symb_code(math_text: str, net_in, net_out, devider)
             if str_p > len(splitted_text_by_simicln[row])-1:
                 break
             symb = splitted_text_by_simicln[row][str_p]
-            # print('symb', symb)
             if symb.isdigit():
                 b_c_p += 1
                 x[row][b_c_p] = ICONST
@@ -49,7 +49,6 @@ def create_matrices_x_y_from_symb_code(math_text: str, net_in, net_out, devider)
                 b_c_p += 1
                 x[row][b_c_p] = AND
             elif symb == '|':
-                # print('op!')
                 b_c_p += 1
                 x[row][b_c_p] = OR
             elif symb == 'x':

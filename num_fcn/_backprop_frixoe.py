@@ -33,7 +33,6 @@ class Backprop:
 
         cost = np.zeros((max_iter, 1))
 
-        
         for i in range(max_iter):
 
             hid_err = 0
@@ -45,15 +44,14 @@ class Backprop:
             gl_err = 0
 
             m = self._fcn.X.shape[0]
-            self.samp_p=0
-            for _ in range(m) :
-                _sys.stdout.write(
+            self.samp_p = 0
+            for _ in range(m):
+                    _sys.stdout.write(
                     "\rIteration: {} and {} ".format(i + 1, self.samp_p + 1))
 
-                if self.samp_count % (batch_size+1) != 0:  # Накапливаем градиент
-                    input_vec = self._fcn.X[self.samp_p].reshape(
-                        self._fcn.X[self.samp_p].shape[0], 1)
-                    hid, out_cn = self._fcn.forward(input_vec)
+                # if self.samp_count % (batch_size+1) != 0:  # Накапливаем градиент
+                    input_vec = self._fcn.X[self.samp_p]
+                    hid, out_cn, x = self._fcn.forward(input_vec)
 
                     error_metric = out_cn - \
                         self._fcn.Y[self.samp_p].reshape(
@@ -64,26 +62,27 @@ class Backprop:
 
                     hid_half_err = self.calc_hid_err(hid, out_cn_half_err)
 
-                    hid_err += hid_half_err.dot(input_vec.T)
+                    hid_err += hid_half_err.dot(x)
 
                     hid_bias_err += hid_half_err * 1
                     out_bias_err += out_cn_half_err * 1
-                   
+
                     gl_err += self._fcn._util.mse(error_metric)
-                else:  # Применяем его
-                    self._fcn.W1 = self.update_matrix(
+                    self.samp_p += 1
+                # else:  # Применяем его
+            self._fcn.W1 = self.update_matrix(
                         self._fcn.W1, hid_err, reg_param, learning_rate, m)
 
-                    self._fcn.W2 = self.update_matrix(
+            self._fcn.W2 = self.update_matrix(
                         self._fcn.W2, out_cn_err, reg_param, learning_rate, m)
 
-                    self._fcn.B1 = self._fcn.B1 - \
+            self._fcn.B1 = self._fcn.B1 - \
                         learning_rate * (hid_bias_err / m)
-                    self._fcn.B2 = self._fcn.B2 - \
+            self._fcn.B2 = self._fcn.B2 - \
                         learning_rate * (out_bias_err / m)
-                   
-                self.samp_p += 1
-                self.samp_count += 1
+
+                    # self.samp_p += 1
+                    # self.samp_count += 1
 
             gl_err = gl_err / 2
             cost[i] = gl_err

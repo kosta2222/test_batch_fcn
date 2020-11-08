@@ -1,12 +1,12 @@
 from num_fcn._learn_logic_as_symbs import LearnLogicAsSymbs
 from num_fcn._learn_math_as_symbs import LearnMathAsSymbs
+from num_fcn._net_factory import NetFactory
+
 import os
 
-s1=os.path.join(os.path.dirname(__file__),"..", 'wei.my')
-s2=os.path.join(os.path.dirname(__file__), "..", 'wei_math.my')
 class VmTest:
-    def __init__(self, learn_logic_fcn=LearnLogicAsSymbs(load_f_name=s1),
-     learn_math_fcn=LearnMathAsSymbs(load_f_name=s2)):
+    def __init__(self, learn_logic_fcn=LearnLogicAsSymbs(load_f_name='wei.my'),
+     learn_math_fcn=LearnMathAsSymbs(load_f_name='')):
         self._learn_logic_fcn = learn_logic_fcn
         self._learn_math_fcn = learn_math_fcn
 
@@ -23,7 +23,7 @@ class VmTest:
                     s1 = input('L->')
                     if s1 == 'exit':
                         break
-                    b_c, ans=self._learn_logic_fcn.evaluate("logic", s1)
+                    b_c, ans=self._learn_logic_fcn.predict(s1)
                     if b_c == ICONST:
                         print("answer %d" % ans)
                     else:
@@ -33,11 +33,13 @@ class VmTest:
                     s2 = input('M->')
                     if s2 == 'exit':
                         break
-                    b_c, ans=self._learn_math_fcn.predict_spec("math", s2)
+                    b_c, ans=self._learn_math_fcn.predict(s2)
                     if b_c == ICONST:
                         print("answer %d" % ans)
                     else:
-                        print("uncnown answer")
+                        print("unknown answer")
+            else:
+                print("unknown mode")            
 
 
 def main():
